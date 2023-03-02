@@ -6,6 +6,7 @@ import {blogsCollection, BlogType, postsCollection} from "./db";
 //export let blogs: BlogType[] = []
 
 export const blogsRepository = {
+    /*
     async findBlogs(title: string | null | undefined): Promise<BlogType[]> {
 
         const filter: any = {}
@@ -26,19 +27,11 @@ export const blogsRepository = {
             return null
         }
     },
+*/
 
 
+    async createBlog(newBlog: BlogType): Promise<BlogType | null> {
 
-    async createBlog(name: string,
-                         description: string, websiteUrl: string): Promise<BlogType | null> {
-        const newBlog= {
-            id: (+(new Date())).toString(),
-            name: name,
-            description: description,
-            websiteUrl: websiteUrl,
-            createdAt: (new Date()).toISOString(),
-            isMembership: false
-        }
 
         const insertNewBlogInDb = await blogsCollection.insertOne(newBlog)
 

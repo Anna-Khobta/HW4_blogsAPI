@@ -7,6 +7,7 @@ import {titleValidation, shortDescriptionValidation, contentValidation, idValida
 import {postsRepositories} from "../repositories/posts-db-repositories";
 import {blogsRepository} from "../repositories/blogs-db-repositories";
 import {blogsRouter} from "./blogs-router";
+import {postsService} from "../domain/posts-service";
 
 //import {blogs} from "./blogs-router";
 //export let posts: PostType = []
@@ -44,7 +45,7 @@ postsRouter.post('/posts',
     async (req: Request, res: Response ) => {
 
 
-        const newPostWithoughtID = await postsRepositories.createPost(req.body.title,
+        const newPostWithoughtID = await postsService.createPost(req.body.title,
             req.body.shortDescription, req.body.content, req.body.blogId )
 
         if (newPostWithoughtID) {
@@ -63,7 +64,7 @@ postsRouter.put('/posts/:id',
     inputValidationMiddleware,
     async (req: Request, res:Response) => {
 
-    const updatedPosWithoughtID = await postsRepositories.updatePost(req.params.id, req.body.title,
+    const updatedPosWithoughtID = await postsService.updatePost(req.params.id, req.body.title,
         req.body.shortDescription, req.body.content, req.body.blogId )
 
         if (updatedPosWithoughtID) {
@@ -82,7 +83,7 @@ postsRouter.delete('/posts/:id',
     authorizationMiddleware,
     async (req: Request, res: Response ) => {
 
-        const isDeleted = await postsRepositories.deletePost(req.params.id)
+        const isDeleted = await postsService.deletePost(req.params.id)
 
         if (isDeleted) {
             res.send(204)
