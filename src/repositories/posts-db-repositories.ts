@@ -1,4 +1,4 @@
-import {blogsCollection, BlogType, postsCollection, PostType} from "./db";
+import {blogsCollection, BlogType, postsCollection, PostType} from "../repositories/db";
 import {blogsRepository} from "./blogs-db-repositories";
 
 
@@ -13,54 +13,40 @@ export const postsRepositories = {
         return postsCollection.find((filter), {projection: {_id: 0}}).toArray()
     },
 
-
-    async findPostById(id: string): Promise<PostType | null> {
-        let post: PostType | null = await postsCollection.findOne({id: id}, {projection: {_id: 0}})
-        if (post) {
-            return post
-        } else {
-            return null
-        }
-    },
-
-
-    async createPost(title: string, shortDescription: string, content: string,
-                     blogId: string): Promise<PostType | null | undefined> {
+    // TO DO вынести блог в блоги или отдельно
+    async findBlogName(blogId: string): Promise <BlogType | null> {
 
         let foundBlogName = await blogsCollection.findOne({id: blogId}, {projection: {_id: 0}})
 
-    if (foundBlogName) {
-    const newPost = {
-        id: (+(new Date())).toString(),
-        title: title,
-        shortDescription: shortDescription,
-        content: content,
-        blogId: blogId,
-        blogName: foundBlogName.name,
-        createdAt: (new Date()).toISOString(),
-    }
+        return foundBlogName || null
+    },
+
+    async findPostById (id: string): Promise <PostType | null> {
+        let foundPostById = await postsCollection.findOne({id: id}, {projection: {_id: 0}})
+        return foundPostById || null
+    },
+
+
+    async createPost(newPost: PostType): Promise<PostType | null | undefined> {
+
     const newPostInDb = await postsCollection.insertOne(newPost)
 
-        return await postsCollection.findOne({id: newPost.id},{projection:{_id:0}})
+        const newPostWithoughtID= postsCollection.findOne({id: newPost.id},{projection:{_id:0}})
 
+        return newPostWithoughtID
 
-}},
+    },
 
     async updatePost(id: string, title: string, shortDescription: string, content: string,
                      blogId: string): Promise<boolean | undefined> {
 
-        let foundPostId = await postsCollection.findOne({id: id})
+    const updatedPost = await postsCollection.updateOne({id: id},
+        {$set: {title: title,
+                description: shortDescription,
+                content: content }})
 
-        let foundBlogName = await blogsCollection.findOne({id: blogId}, {projection: {_id: 0}})
+    return updatedPost.matchedCount === 1
 
-        if (foundPostId) {
-            if (foundBlogName) {
-                const updatedPost = await postsCollection.updateOne({id: id},
-                    {$set: {title: title, shortDescription: shortDescription, content: content}})
-
-                return updatedPost.matchedCount === 1
-            }
-        }
     },
 
 

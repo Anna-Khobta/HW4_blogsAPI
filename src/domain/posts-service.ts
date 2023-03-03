@@ -1,13 +1,16 @@
-import {blogsCollection, BlogType, postsCollection, PostType} from "./db";
-import {blogsRepository} from "./blogs-db-repositories";
+import {blogsCollection, BlogType, postsCollection, PostType} from "../repositories/db";
 
+import {postsRepositories} from "../repositories/posts-db-repositories";
+import {blogsRepository} from "../repositories/blogs-db-repositories";
 
 export const postsService = {
 
     async createPost(title: string, shortDescription: string, content: string,
                      blogId: string): Promise<PostType | null | undefined> {
 
-        let foundBlogName = await blogsCollection.findOne({id: blogId}, {projection: {_id: 0}})
+        let foundBlogName = await postsRepositories.findBlogName(blogId)
+
+            //blogsCollection.findOne({id: blogId}, {projection: {_id: 0}})
 
         if (foundBlogName) {
             const newPost = {
@@ -19,9 +22,9 @@ export const postsService = {
                 blogName: foundBlogName.name,
                 createdAt: (new Date()).toISOString(),
             }
-            const newPostInDb = await postsCollection.insertOne(newPost)
+            const newPostInDb = await postsRepositories.createPost(newPost)
 
-            return await postsCollection.findOne({id: newPost.id},{projection:{_id:0}})
+            return newPostInDb
 
 
         }},
@@ -29,31 +32,24 @@ export const postsService = {
     async updatePost(id: string, title: string, shortDescription: string, content: string,
                      blogId: string): Promise<boolean | undefined> {
 
-        let foundPostId = await postsCollection.findOne({id: id})
+        let foundPostId = await postsRepositories.findPostById(id)
+        let foundBlogName = await postsRepositories.findBlogName(blogId)
 
-        let foundBlogName = await blogsCollection.findOne({id: blogId}, {projection: {_id: 0}})
+        if (foundPostId && foundBlogName) {
 
-        if (foundPostId) {
-            if (foundBlogName) {
-                const updatedPost = await postsCollection.updateOne({id: id},
-                    {$set: {title: title, shortDescription: shortDescription, content: content}})
-
-                return updatedPost.matchedCount === 1
-            }
+        return await postsRepositories.updatePost (id, title, shortDescription,
+            content, blogId)
         }
     },
 
     async deletePost(id: string): Promise<boolean> {
 
-        const result = await postsCollection.deleteOne({id: id})
-        return result.deletedCount === 1
-        // если 1 сработало. если 0, то нет
+       return postsRepositories.deletePost(id)
     },
 
     async deleteAllPosts(): Promise<boolean> {
-        const result = await postsCollection.deleteMany({})
-        return result.acknowledged
-        // если всё удалит, вернет true
+        return postsRepositories.deleteAllPosts()
+
     }
 }
 

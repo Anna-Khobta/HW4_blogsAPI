@@ -4,6 +4,7 @@ import {blogsRepository} from "../repositories/blogs-db-repositories";
 import {postsCollection} from "../repositories/db";
 import {postsRepositories} from "../repositories/posts-db-repositories";
 import {blogsService} from "../domain/blogs-service";
+import {postsService} from "../domain/posts-service";
 
 export const deleteAllRouter = Router({})
 
