@@ -21,7 +21,7 @@ export type PostType = {
 }
 
 
-const mongoUri = process.env.mongoURI || "mongodb://0.0.0.0:27017/?maxPoolSize=20&w=majority"
+const mongoUri = process.env.mongoURI || "mongodb+srv://AnnaKh:MJV7zwCjuKhpMOHg@cluster0.26ojfvx.mongodb.net/?retryWrites=true&w=majority"
 
 //"mongodb+srv://AnnaKh:MJV7zwCjuKhpMOHg@cluster0.26ojfvx.mongodb.net/?retryWrites=true&w=majority"
 
