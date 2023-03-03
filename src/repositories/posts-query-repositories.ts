@@ -33,5 +33,27 @@ export const postsQueryRepositories = {
         } else {
             return null
         }
+    },
+
+    async findPostsByBlogId (blogId:string, page: number, limit:number, sortDirection: SortDirection, sortBy: string, skip: number) {
+        let findPosts = await postsCollection.find(
+            {blogId: blogId},
+            {projection: {_id: 0}})
+            .skip(skip)
+            .limit(limit)
+            .sort({ [sortBy]: sortDirection })
+            .toArray()
+
+        const total = await postsCollection.countDocuments()
+        const pagesCount = Math.ceil(total/ limit)
+
+        return {
+            pagesCount: pagesCount,
+            page: page,
+            pageSize: limit,
+            totalCount: total,
+            items: findPosts
+        }
+
     }
 }

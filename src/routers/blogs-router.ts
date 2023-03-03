@@ -12,6 +12,7 @@ export const blogsRouter = Router({})
 ///
 
 import {getPagination} from "../functions/pagination";
+import {postsQueryRepositories} from "../repositories/posts-query-repositories";
 
 blogsRouter.get('/blogs', async (req: Request, res: Response ) => {
 
@@ -21,6 +22,8 @@ blogsRouter.get('/blogs', async (req: Request, res: Response ) => {
     res.status(200).send(foundBlogs)
 })
 
+
+// Returns blog by Id
 blogsRouter.get('/blogs/:id', async(req: Request, res: Response ) => {
 
     let blogByID = await blogsQueryRepository.findBlogById(req.params.id)
@@ -32,6 +35,24 @@ blogsRouter.get('/blogs/:id', async(req: Request, res: Response ) => {
     }
 
 })
+
+// Returns all posts for specified blog
+blogsRouter.get("/blogs/:blogId/posts", async (req: Request, res: Response) => {
+
+    let checkBlogByID = await blogsQueryRepository.findBlogByblogId(req.params.blogId)
+
+    const {page, limit, sortDirection, sortBy, searchNameTerm, skip} = getPagination(req.query)
+    const blogId = req.params.blogId
+
+    if (checkBlogByID) {
+        let postsForBlog = await postsQueryRepositories.findPostsByBlogId(blogId, page, limit, sortDirection, sortBy, skip)
+        return res.status(200).send(postsForBlog)
+    } else {
+        return res.send(404)
+    }
+
+})
+
 
 blogsRouter.post('/blogs',
     authorizationMiddleware,

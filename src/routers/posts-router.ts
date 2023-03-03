@@ -9,6 +9,8 @@ import {postsRepositories} from "../repositories/posts-db-repositories";
 import {postsService} from "../domain/posts-service";
 import {getPagination} from "../functions/pagination";
 import {postsQueryRepositories} from "../repositories/posts-query-repositories";
+import {blogsQueryRepository} from "../repositories/blogs-query-repository";
+import {blogsRouter} from "./blogs-router";
 
 
 
@@ -37,6 +39,9 @@ postsRouter.get('/posts/:id', async (req: Request, res: Response ) => {
     }
 
 })
+
+
+
 
 
 postsRouter.post('/posts',
