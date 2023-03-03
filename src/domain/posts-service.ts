@@ -10,7 +10,6 @@ export const postsService = {
 
         let foundBlogName = await postsRepositories.findBlogName(blogId)
 
-            //blogsCollection.findOne({id: blogId}, {projection: {_id: 0}})
 
         if (foundBlogName) {
             const newPost = {

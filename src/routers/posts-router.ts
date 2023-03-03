@@ -59,6 +59,28 @@ postsRouter.post('/posts',
         }
     })
 
+
+postsRouter.post('/blogs/:blogId/posts',
+    authorizationMiddleware,
+    titleValidation,
+    shortDescriptionValidation,
+    contentValidation,
+    inputValidationMiddleware,
+    async (req: Request, res: Response ) => {
+
+
+        const newPostWithoughtID = await postsService.createPost(req.body.title,
+            req.body.shortDescription, req.body.content, req.params.blogId )
+
+        if (newPostWithoughtID) {
+            res.status(201).send(newPostWithoughtID)
+        } else {
+            return res.send(404)
+        }
+    })
+
+
+
 postsRouter.put('/posts/:id',
     authorizationMiddleware,
     idValidation,

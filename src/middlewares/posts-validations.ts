@@ -1,4 +1,4 @@
-import {body} from "express-validator";
+import {body, param} from "express-validator";
 
 export const titleValidation = body('title')
     .trim().not().isEmpty().withMessage("The title is empty")
@@ -15,6 +15,7 @@ export const contentValidation = body('content')
 export const idValidation = body('blogId')
     .trim().not().isEmpty().withMessage("The blogId is empty")
     .isLength({max:18}).withMessage("The maximum length is 18")
+
 
 /*
 export const idContainsValidation = body('blogId')
