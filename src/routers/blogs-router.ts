@@ -11,11 +11,11 @@ export const blogsRouter = Router({})
 
 ///
 
-import {getPaginationForBlog} from "../functions/pagination";
+import {getPagination} from "../functions/pagination";
 
 blogsRouter.get('/blogs', async (req: Request, res: Response ) => {
 
-    const {page, limit, sortDirection, sortBy, searchNameTerm, skip} = getPaginationForBlog(req.query)
+    const {page, limit, sortDirection, sortBy, searchNameTerm, skip} = getPagination(req.query)
 
     const foundBlogs = await blogsQueryRepository.findBlogs(page, limit, sortDirection, sortBy, searchNameTerm, skip)
     res.status(200).send(foundBlogs)

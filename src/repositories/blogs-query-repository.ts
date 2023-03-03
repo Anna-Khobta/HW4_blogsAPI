@@ -6,7 +6,7 @@ import {SortDirection} from "mongodb";
 
 
 export const blogsQueryRepository = {
-    async findBlogs(page:number, limit:number, sortDirection: any, sortBy: string, searchNameTerm:string, skip:number) {
+    async findBlogs(page:number, limit:number, sortDirection: SortDirection, sortBy: string, searchNameTerm:string, skip:number) {
     let findBlogs = await blogsCollection.find(
         { name: { $regex: searchNameTerm, $options: 'i' }},
         {projection: {_id: 0}})

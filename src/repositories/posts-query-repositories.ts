@@ -1,15 +1,30 @@
+import {Sort, SortDirection} from "mongodb";
+import {postsCollection} from "./db";
 
+import {PostType} from "./db";
 
 export const postsQueryRepositories = {
-    async findPosts(title: string | null | undefined): Promise<PostType[]> {
-        const filter: any = {}
+    async findPosts(page: number, limit:number, sortDirection: SortDirection, sortBy: string, skip: number) {
+        let findPosts = await postsCollection.find(
+            {},
+            {projection: {_id: 0}})
+            .skip(skip)
+            .limit(limit)
+            .sort({ [sortBy]: sortDirection })
+            .toArray()
 
-        if (title) {
-            filter.title = {$regex: title}
+        const total = await postsCollection.countDocuments()
+        const pagesCount = Math.ceil(total/ limit)
+
+        return {
+            pagesCount: pagesCount,
+            page: page,
+            pageSize: limit,
+            totalCount: total,
+            items: findPosts
         }
-        return postsCollection.find((filter), {projection: {_id: 0}}).toArray()
-    },
 
+    },
 
     async findPostById(id: string): Promise<PostType | null> {
         let post: PostType | null = await postsCollection.findOne({id: id}, {projection: {_id: 0}})
@@ -18,4 +33,5 @@ export const postsQueryRepositories = {
         } else {
             return null
         }
-    },
+    }
+}

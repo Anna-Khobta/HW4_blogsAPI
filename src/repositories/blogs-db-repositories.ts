@@ -6,29 +6,6 @@ import {blogsCollection, BlogType, postsCollection} from "./db";
 //export let blogs: BlogType[] = []
 
 export const blogsRepository = {
-    /*
-    async findBlogs(title: string | null | undefined): Promise<BlogType[]> {
-
-        const filter: any = {}
-
-        if (title) {
-            filter.title = {$regex: title}
-        }
-
-        return blogsCollection.find((filter),{projection:{_id:0}}).toArray()
-    },
-
-
-    async findBlogById(id: string): Promise<BlogType | null> {
-        let blog: BlogType | null = await blogsCollection.findOne({id: id},{projection:{_id:0}})
-        if (blog) {
-            return blog
-        } else {
-            return null
-        }
-    },
-*/
-
 
     async createBlog(newBlog: BlogType): Promise<BlogType | null> {
 
@@ -45,9 +22,6 @@ export const blogsRepository = {
 
         const result = await blogsCollection.updateOne({id: id}, {$set: {name: name, description:description, websiteUrl:websiteUrl  }})
         return result.matchedCount === 1
-        // если совпал 1, то обвновился 1
-
-        //ечли блог id меняетя, то тогда тут добавить find many posts , и апдейт там имя блога
 
     },
 

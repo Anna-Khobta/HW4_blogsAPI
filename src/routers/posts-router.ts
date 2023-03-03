@@ -1,30 +1,34 @@
 
-import {Request, Response, Router} from "express";
+import {query, Request, Response, Router} from "express";
 import {authorizationMiddleware} from "../middlewares/authorization";
 import {inputValidationMiddleware} from "../middlewares/input-validation-middleware";
 
 import {titleValidation, shortDescriptionValidation, contentValidation, idValidation} from "../middlewares/posts-validations";
 import {postsRepositories} from "../repositories/posts-db-repositories";
-import {blogsRepository} from "../repositories/blogs-db-repositories";
-import {blogsRouter} from "./blogs-router";
-import {postsService} from "../domain/posts-service";
 
-//import {blogs} from "./blogs-router";
-//export let posts: PostType = []
+import {postsService} from "../domain/posts-service";
+import {getPagination} from "../functions/pagination";
+import {postsQueryRepositories} from "../repositories/posts-query-repositories";
+
+
 
 export const postsRouter = Router({})
 
 
 postsRouter.get('/posts',
     async (req: Request, res: Response ) => {
-    let foundPosts = await postsRepositories.findPosts(req.query.title?.toString())
+
+       const {page, limit, sortDirection, sortBy, skip} = getPagination(req.query)
+
+
+        let foundPosts = await postsQueryRepositories.findPosts(page, limit, sortDirection, sortBy, skip)
         res.status(200).send(foundPosts)
     })
 
 
 postsRouter.get('/posts/:id', async (req: Request, res: Response ) => {
 
-    let findPostID = await postsRepositories.findPostById(req.params.id)
+    let findPostID = await postsQueryRepositories.findPostById(req.params.id)
 
     if (findPostID) {
         return res.status(200).send(findPostID)
