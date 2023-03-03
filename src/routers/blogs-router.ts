@@ -41,7 +41,7 @@ blogsRouter.get("/blogs/:blogId/posts", async (req: Request, res: Response) => {
 
     let checkBlogByID = await blogsQueryRepository.findBlogByblogId(req.params.blogId)
 
-    const {page, limit, sortDirection, sortBy, searchNameTerm, skip} = getPagination(req.query)
+    const {page, limit, sortDirection, sortBy, skip} = getPagination(req.query)
     const blogId = req.params.blogId
 
     if (checkBlogByID) {

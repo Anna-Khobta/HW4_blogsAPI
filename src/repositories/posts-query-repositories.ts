@@ -44,7 +44,7 @@ export const postsQueryRepositories = {
             .sort({ [sortBy]: sortDirection })
             .toArray()
 
-        const total = await postsCollection.countDocuments()
+        const total = await postsCollection.countDocuments({blogId: blogId})
         const pagesCount = Math.ceil(total/ limit)
 
         return {
